@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { Card, Button, Typography, CardContent, Grid } from "@mui/material";
+import {
+  Card,
+  Button,
+  Typography,
+  CardContent,
+  Grid,
+  CircularProgress,
+} from "@mui/material";
 import { AppContext } from "./Context";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +16,7 @@ export default function MainPage() {
   const [next, setNext] = useState();
   const [previous, setPrevious] = useState();
   const [trigger, setTrigger] = useState();
-
+  const [load, setLoad] = useState(false);
   let navigate = useNavigate();
   const { loggedUserCTX, tokenCTX } = useContext(AppContext);
   const [loggedUser] = loggedUserCTX;
@@ -24,12 +31,15 @@ export default function MainPage() {
   }, [trigger]);
 
   function addPokemon(poke_name) {
+    setLoad(true);
     if (!loggedUser) navigate("/login");
     let usedToken = JSON.parse(tokenx).value;
 
-    axios.post(
-      `https://pokemonedvora.herokuapp.com/addPokemon?token=${usedToken}&pokemonName=${poke_name}`
-    );
+    axios
+      .post(
+        `https://pokemonedvora.herokuapp.com/addPokemon?token=${usedToken}&pokemonName=${poke_name}`
+      )
+      .then(() => setLoad(false));
   }
   return (
     <div style={{ width: "100%", textAlign: "-webkit-center" }}>
@@ -51,16 +61,20 @@ export default function MainPage() {
                   </Typography>
                 </CardContent>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  <Button size="small" onClick={() => addPokemon(e.name)}>
-                    Add Pokemon
-                  </Button>
+                  {load ? (
+                    <CircularProgress style={{ alignSelf: "center" }} />
+                  ) : (
+                    <Button size="small" onClick={() => addPokemon(e.name)}>
+                      Add Pokemon
+                    </Button>
+                  )}
                 </div>
               </Card>
             </Grid>
           ))
         ) : (
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <span>Loading..</span>
+            <CircularProgress />
           </Grid>
         )}
         {previous ? (
