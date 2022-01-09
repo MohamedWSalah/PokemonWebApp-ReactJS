@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+a {
+  text-decoration: none;
+  :hover {
+    text-decoration: none;
+  }
+  :visited {
+    text-decoration: none;
+  }
+  :link {
+    text-decoration: none;
+  }
+  :active {
+    text-decoration: none;
+  }
+  :focus {
+    text-decoration: none;
+  }
+}
